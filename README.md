@@ -121,4 +121,53 @@ public class OrderServiceImpl implements OrderService {
 롬복을 추가하는 방법은 플러그인 설치후 annotation processors에서 enable annotation processing 체크
 
 
+## Two same types of beans
+@autowired를 사용하면 타입으로 조회하게된다.
+
+빈2개를 만든다
+```
+@Component
+public class FixdiscountPolicy implements DiscountPolicy()...
+
+@Component
+public class RateDiscountPolicy...
+```
+
+그리고 의존관계 자동주입 실행!
+```
+@Autowired
+private DiscountPolicy discountPolicy
+```
+
+당연히 no unique에러가 발생하게된다.
+
+어떻게 처리할까?
+1. @autowired 필드명 매칭
+@autowired타입매칭을 시도하고 빈있으면 필ㄷ이름 패라미터이름으로 빈이름을 추가 매칭!
+
+```
+@Autowired
+private DiscountPolicy discountPolicy
+...
+
+@Autowired
+private DiscountPolicy rateDiscountPolicy
+
+```
+타입매칭 -> 결과2개이상일때는, 필드명,패러미터 명으로 빈이름 매칭
+
+2. @Qualifier 사용
+추가 구분자를 붙여주는 방법 단, 빈이름 변경은 아님
+```
+@Component
+@Qualifier("fixDiscountPolicy")
+public class FixDiscountPolicy implements DiscountPolicy()
+```
+
+qualifier끼리 매칭 -> 빈이름 매칭
+
+3. @Primary사용
+우선순위를 정하는 방법! @Autowired시에 여러빈이 매칭되면 @Primary가 우선권을 가진다...! 어떤빈에 우선권을 주는것인데.... qualifier와의 우선권은?
+
+
 
