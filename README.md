@@ -88,3 +88,37 @@ final keyword
 ## Conclusion
 1. 순수한 자바언어의 특징을 잘 살림
 2. 생성자 주입 사용후 수정자 주입방식옵션으로 부여 가능 (동시에 사용가능)
+
+# 롬복과 최신 트렌드
+생성자 주입은 코드가 굉장히 많음...
+```
+@Component
+public class OrderServiceImpl implements OrderService}
+  private final MemberRepository memberRepository;
+  private final DiscountPolicy discountPolicy;
+  
+  @Autowired
+  public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy){
+    this.memberRepository = memberRepository;
+    this.discountPolicy = discountPolicy;
+  }
+}
+```
+
+위코드가...
+```
+
+@Component
+@RequiredArgsConstructor
+public class OrderServiceImpl implements OrderService {
+
+  private final MemberRepository memberRepository;
+  private final DiscountPolicy discountPolicy;
+
+}
+```
+
+롬복을 추가하는 방법은 플러그인 설치후 annotation processors에서 enable annotation processing 체크
+
+
+
