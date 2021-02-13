@@ -169,5 +169,55 @@ qualifier끼리 매칭 -> 빈이름 매칭
 3. @Primary사용
 우선순위를 정하는 방법! @Autowired시에 여러빈이 매칭되면 @Primary가 우선권을 가진다...! 어떤빈에 우선권을 주는것인데.... qualifier와의 우선권은?
 
+annotation 직접 만들기
+@Qualifier("mainDiscountPolicy")는 컴파일시 타입체크가 안된다. 그래서 애노테이션을 만들어서 문제를 해결 할 수 있다.
+```
+//생성자 자동 주입
+@Autowired
+public OrderServiceImpl(MemberRepository memberRepository, @MainDiscountPolicy DiscountPolicy discountPolicy) {
+  this.memberRepository = memberRepository;
+  this.discountPolicy = discountPolicy;
+}
+//수정자 자동 주입
+@Autowired
+public DiscountPolicy setDiscountPolicy(@MainDiscountPolicy DiscountPolicy discountPolicy) {
+  return discountPolicy;
+}
+```
+
+조회한 빈이 모두 필요할때 List, Map
+ㅡ map 에다가 필요한 빈들을 전부 넣어주고 원할때 꺼내쓸수있음
+
+```
+public DiscountService(Map<String, DiscountPolicy> policyMap,
+List<DiscountPolicy> policies) {
+  this.policyMap = policyMap;
+  this.policies = policies;
+  System.out.println("policyMap = " + policyMap);
+  System.out.println("policies = " + policies);
+ }
+ public int discount(Member member, int price, String discountCode) {
+  DiscountPolicy discountPolicy = policyMap.get(discountCode);
+  System.out.println("discountCode = " + discountCode);
+  System.out.println("discountPolicy = " + discountPolicy);
+  return discountPolicy.discount(member, price);
+ }
+```
+
+- policyMap에 dsciountPolicy를 주입받을것이고 그안에는 fix ratediscountPolicy 가있다.
+- discountCode에 따라서 맞는 스프링빈을 찾아서 실행한다.
 
 
+# 자동,수동의 올바른 실무 운영기준
+
+1. 편리한 자동기능을 기본으로 사용!
+- 애플리케이션 로직을 자동으로 스캔할 수 있도록 지원하고 스프링 부트는 컨포넌트 스캔을 기본으로 사용한다.
+- 자동빈등록을 통해서도 OCP,DIP를 지킬 수 있다.
+
+2. 수동빈 등록은 언제 사용?
+- 업무로직빈: 웹을 지원한는 컨트롤러, 핵심 비지니스 로직이 있는 서비스, 데이터 계층의 로직을 처리하는 리포지토리등이 모두 업무 로직 -> 비슷한 로직에 자동기능 적극 사용! 어디서 무제생겼는지 파악이 쉽다
+- 기술 지원 빈: 기술적인 문제가 공통 관심사처리에 사용 -> 수가 적고 애플리케이션 전반에 걸쳐서 광범위하게 영향을 미친다. 수동빈사용!
+
+## conclusion
+편리한자동기능을 기본으로 사용!
+직접등록 하는 기술지원객체는 수동!
