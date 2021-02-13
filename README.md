@@ -78,11 +78,11 @@ public class OrderServiceImpl implements OrderService{
 
 결론....생성자 주입 선택!
 di framework는 생성자 주입을 권장함.
-불변
+- 불변
 - 의존관계는 어플리케이션 종료전까지 변하면 안됨. 목적자체가 그렇다하면 생성자 주입을 하는게 맞음.
-누락
+- 누락
 - 프레임워크 없이 순수한 자바코드를 단위테스트 하는경우에 필요하다.
-final keyword
+- final keyword
 - 한번 생성할때 정해지면 안바뀐다. 생성자 혹은 초기값세팅 가능. 그래서 컴파일때에 누락된 설정값 캐치가 가능해짐
 
 ## Conclusion
