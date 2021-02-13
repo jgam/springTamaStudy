@@ -159,9 +159,19 @@ private DiscountPolicy rateDiscountPolicy
 2. @Qualifier 사용
 추가 구분자를 붙여주는 방법 단, 빈이름 변경은 아님
 ```
-@Component
-@Qualifier("fixDiscountPolicy")
-public class FixDiscountPolicy implements DiscountPolicy()
+//생성자
+@Autowired
+public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy discountPolicy) {
+  this.memberRepository = memberRepository;
+  this.discountPolicy = discountPolicy;
+}
+
+//수정자
+@Autowired
+public DiscountPolicy setDiscountPolicy(@Qualifier("mainDiscountPolicy")
+DiscountPolicy discountPolicy) {
+  return discountPolicy
+}
 ```
 
 qualifier끼리 매칭 -> 빈이름 매칭
